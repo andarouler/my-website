@@ -1,7 +1,6 @@
 <script>
 	import { onMount, tick } from 'svelte';
 	import { gsap } from 'gsap';
-
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
 	// Register ScrollTrigger plugin
@@ -41,10 +40,46 @@
 
 	onMount(() => {
 		cycleSentences(); // Initialize the first animation
-		setInterval(cycleSentences, 5000); // Cycle every 4 seconds
+		setInterval(cycleSentences, 5000); // Cycle every 5 seconds
 
-		// Select all h2 elements individually and animate them with ScrollTrigger
-		const headings = document.querySelectorAll('h2');
+		// Special bounce effect for the h2 in the #about section
+		gsap.fromTo(
+			'#about h2',
+			{
+				opacity: 0,
+				scale: 0.5,
+				y: -30
+			},
+			{
+				opacity: 1,
+				scale: 1,
+				y: 0,
+				duration: 1.5,
+				ease: 'bounce.out', // Bounce effect
+				onComplete: () => {
+					let vibrationDuration = 0.1;
+
+					// Optional: Vibration effect after the first bounce animation
+					gsap.to('#about h2', {
+						duration: vibrationDuration,
+						repeat: 10,
+						yoyo: true,
+						x: '+=2',
+						ease: 'power1.inOut',
+						onRepeat: function () {
+							vibrationDuration += 0.02; // Increment duration each repeat to slow down the vibration
+							this.duration(vibrationDuration); // Apply the new duration to the animation
+						},
+						onComplete: () => {
+							gsap.to('#about h2', { x: 50, opacity: 0 }, {});
+						}
+					});
+				}
+			}
+		);
+
+		// Apply scroll-triggered animations to the other h2 elements
+		const headings = document.querySelectorAll('section:not(#about) h2');
 		headings.forEach((heading) => {
 			gsap.from(heading, {
 				opacity: 0,
@@ -103,3 +138,10 @@
 		<p>Lorem ipsum</p>
 	</section>
 </main>
+
+<style>
+	h2 {
+		font-size: 2.5rem;
+		color: var(--primary-color);
+	}
+</style>
