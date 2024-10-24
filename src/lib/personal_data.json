@@ -1,0 +1,32 @@
+{
+	"aboutMeExtended": {
+		"text": "I study Computerscience. I like programming. Doing stuff with AI. I like spending time in nature."
+	},
+	"experiences": [
+		{
+			"title": "Workingstudent AI Engineer",
+			"company": "micronova GmbH",
+			"description": "Automation of various tasks using AI.",
+			"timeline": "2024 - now"
+		},
+		{
+			"title": "Workingstudent Cloud Engineer",
+			"company": "artcodix GmbH",
+			"description": "Managing customer workloads on Linux and Kubernetes.",
+			"timeline": "2022 - 2024"
+		}
+	],
+	"education": [
+		{
+			"degree": "Master in Computerscience",
+			"school": "University of Passau",
+			"timeline": "2024 - now"
+		},
+		{
+			"degree": "Bachelor in Computerscience",
+			"thesis": "Erfassung und Überwachung von Schwachstellen in Kubernetes",
+			"school": "TH Rosenheim",
+			"timeline": "2019 - 2023"
+		}
+	]
+}
