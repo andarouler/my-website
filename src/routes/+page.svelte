@@ -3,8 +3,8 @@
 	import { gsap } from 'gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
-	// Register ScrollTrigger plugin
 	gsap.registerPlugin(ScrollTrigger);
+
 	import Card from '$lib/Card.svelte';
 
 	// import personal stuff
@@ -22,6 +22,9 @@
 	// State for the current sentence
 	let currentSentence = sentences[0];
 	let currentIndex = 0;
+
+	// Split the heading text into individual characters
+	let headingText = 'Hello'.split('');
 
 	// Function to cycle through sentences
 	function cycleSentences() {
@@ -55,11 +58,11 @@
 				scale: 1,
 				y: 0,
 				duration: 1.5,
-				ease: 'bounce.out', // Bounce effect
+				ease: 'bounce.out',
 				onComplete: () => {
 					let vibrationDuration = 0.1;
 
-					// Optional: Vibration effect after the first bounce animation
+					// Vibration effect after the bounce animation
 					gsap.to('#about h2', {
 						duration: vibrationDuration,
 						repeat: 10,
@@ -67,11 +70,36 @@
 						x: '+=2',
 						ease: 'power1.inOut',
 						onRepeat: function () {
-							vibrationDuration += 0.02; // Increment duration each repeat to slow down the vibration
-							this.duration(vibrationDuration); // Apply the new duration to the animation
+							vibrationDuration += 0.02;
+							this.duration(vibrationDuration);
 						},
 						onComplete: () => {
-							gsap.to('#about h2', { x: 50, opacity: 0 }, {});
+							function animateLettersRandomly() {
+								const letters = document.querySelectorAll('#about h2 span');
+
+								gsap.fromTo(
+									letters,
+									{ x: 50, opacity: 0 }, // Startzustand
+									{
+										x: 0,
+										opacity: 1,
+										duration: 1,
+										stagger: {
+											amount: 1, // Zeit zwischen den Buchstaben
+											from: 'start' // Animation beginnt von links nach rechts
+										},
+										ease: 'power2.out',
+										onComplete: () => {
+											// Nach der Animation, eine zufällige Zeit warten und dann die Animation erneut ausführen
+											const randomDelay = Math.random() * 10 + 5; // Zufällige Verzögerung zwischen 2 und 7 Sekunden
+											gsap.delayedCall(randomDelay, animateLettersRandomly);
+										}
+									}
+								);
+							}
+
+							// Starte die erste Animation
+							animateLettersRandomly();
 						}
 					});
 				}
@@ -87,9 +115,9 @@
 				duration: 1,
 				ease: 'power2.out',
 				scrollTrigger: {
-					trigger: heading, // Trigger for each individual h2
-					start: 'top 80%', // Start the animation when the top of the heading reaches 80% of the viewport
-					toggleActions: 'play none none none' // Play once when in view
+					trigger: heading,
+					start: 'top 80%',
+					toggleActions: 'play none none none'
 				}
 			});
 		});
@@ -99,7 +127,11 @@
 <main>
 	<!-- Über mich -->
 	<section id="about">
-		<h2>Hello</h2>
+		<h2>
+			{#each headingText as letter}
+				<span>{letter}</span>
+			{/each}
+		</h2>
 		<img src={profilePic} alt="profile" />
 		<p>{aboutMe} - <span class="sentence">{currentSentence}</span></p>
 	</section>
@@ -138,10 +170,3 @@
 		<p>Lorem ipsum</p>
 	</section>
 </main>
-
-<style>
-	h2 {
-		font-size: 2.5rem;
-		color: var(--primary-color);
-	}
-</style>
